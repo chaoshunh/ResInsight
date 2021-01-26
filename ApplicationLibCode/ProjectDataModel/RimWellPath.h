@@ -119,9 +119,10 @@ public:
     void                         add3dWellLogCurve( Rim3dWellLogCurve* rim3dWellLogCurve );
     Rim3dWellLogCurveCollection* rim3dWellLogCurveCollection() const;
 
-    const RimWellPathCompletions*        completions() const;
-    const RimWellPathCompletionSettings* completionSettings() const;
-    RimWellPathCompletionSettings*       completionSettings();
+    std::vector<const RimWellPathComponentInterface*> allCompletionsRecursively() const;
+    const RimWellPathCompletions*                     completions() const;
+    const RimWellPathCompletionSettings*              completionSettings() const;
+    RimWellPathCompletionSettings*                    completionSettings();
 
     RimFishbonesCollection*               fishbonesCollection();
     const RimFishbonesCollection*         fishbonesCollection() const;
@@ -172,7 +173,7 @@ protected:
     void defineUiTreeOrdering( caf::PdmUiTreeOrdering& uiTreeOrdering, QString uiConfigName ) override;
 
     static void copyCompletionSettings( RimWellPath* from, RimWellPath* to );
-    static void deleteCompletionSettings( RimWellPath* wellPath );
+
     // Fields
 protected:
     caf::PdmProxyValueField<double> m_airGap;
