@@ -75,6 +75,7 @@ RimModeledWellPathLateral::~RimModeledWellPathLateral()
 //--------------------------------------------------------------------------------------------------
 void RimModeledWellPathLateral::createWellPathGeometry()
 {
+    m_geometryDefinition->setParentGeometry( parentGroup()->wellPathGeometry() );
     this->setWellPathGeometry( m_geometryDefinition->createWellPathGeometry().p() );
 }
 

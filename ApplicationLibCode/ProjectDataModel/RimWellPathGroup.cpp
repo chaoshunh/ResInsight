@@ -151,12 +151,17 @@ void RimWellPathGroup::createWellPathGeometry()
     size_t commonSize      = commonGeometry->wellPathPoints().size();
     if ( commonSize > 0u ) childStartIndex = commonSize - 1u;
 
-    for ( auto wellPath : m_childWellPaths )
-    {
-        wellPath->wellPathGeometry()->setUniqueStartAndEndIndex( childStartIndex, std::numeric_limits<size_t>::max() );
-    }
     setWellPathGeometry( commonGeometry.p() );
     wellPathGeometry()->setUniqueStartAndEndIndex( wellPathGeometry()->uniqueStartIndex(), childStartIndex );
+
+    for ( auto wellPath : m_childWellPaths )
+    {
+        if ( auto lateral = dynamic_cast<RimModeledWellPathLateral*>( wellPath.p() ); lateral )
+        {
+            lateral->createWellPathGeometry();
+        }
+        wellPath->wellPathGeometry()->setUniqueStartAndEndIndex( childStartIndex, std::numeric_limits<size_t>::max() );
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -192,7 +197,10 @@ std::vector<const RigWellPath*> RimWellPathGroup::wellPathGeometries() const
     std::vector<const RigWellPath*> allGeometries;
     for ( const auto child : m_childWellPaths() )
     {
-        allGeometries.push_back( child->wellPathGeometry() );
+        if ( child->wellPathGeometry() )
+        {
+            allGeometries.push_back( child->wellPathGeometry() );
+        }
     }
     return allGeometries;
 }
