@@ -28,6 +28,9 @@
 #include "RiaTextStringTools.h"
 #include "RiaWellNameComparer.h"
 
+#include "RifWellPathFormationsImporter.h"
+#include "RifWellPathImporter.h"
+
 #include "RigEclipseCaseData.h"
 #include "RigMainGrid.h"
 #include "RigWellPath.h"
@@ -35,6 +38,9 @@
 #include "RimEclipseCase.h"
 #include "RimEclipseCaseCollection.h"
 #include "RimEclipseView.h"
+#include "RimFileWellPath.h"
+#include "RimModeledWellPath.h"
+#include "RimModeledWellPathLateral.h"
 #include "RimOilField.h"
 #include "RimPerforationCollection.h"
 #include "RimProject.h"
@@ -44,10 +50,8 @@
 #include "RimWellMeasurementCollection.h"
 #include "RimWellPath.h"
 #include "RimWellPathGroup.h"
-#include "Riu3DMainWindowTools.h"
 
-#include "RifWellPathFormationsImporter.h"
-#include "RifWellPathImporter.h"
+#include "Riu3DMainWindowTools.h"
 
 #include "cafPdmUiEditorHandle.h"
 #include "cafPdmUiTreeOrdering.h"
@@ -57,8 +61,6 @@
 #include <QFileInfo>
 #include <QString>
 
-#include "RimFileWellPath.h"
-#include "RimModeledWellPath.h"
 #include <cmath>
 #include <fstream>
 
@@ -260,6 +262,7 @@ void RimWellPathCollection::loadDataAndUpdate()
         }
         progress.incrementProgress();
     }
+
     for ( auto group : topLevelGroups() )
     {
         group->createWellPathGeometry();

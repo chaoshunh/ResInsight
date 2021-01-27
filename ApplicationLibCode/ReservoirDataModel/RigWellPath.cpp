@@ -255,6 +255,9 @@ cvf::Vec3d
     return interpolatedVector;
 }
 
+//--------------------------------------------------------------------------------------------------
+///
+//--------------------------------------------------------------------------------------------------
 cvf::Vec3d
     RigWellPath::interpolatedPointAlongWellPath( double  measuredDepth,
                                                  double* horizontalLengthAlongWellToStartClipPoint /*= nullptr*/ ) const
