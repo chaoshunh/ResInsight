@@ -112,7 +112,7 @@ void RimWellPathGroup::removeChildWellPath( RimWellPath* wellPath )
 
     if ( auto geometry = wellPath->wellPathGeometry(); geometry )
     {
-        geometry->setUniqueStartIndex( 0u );
+        geometry->setUniqueStartAndEndIndex( 0u, std::numeric_limits<size_t>::max() );
     }
     createWellPathGeometry();
     updateAllRequiredEditors();
@@ -146,15 +146,17 @@ void RimWellPathGroup::createWellPathGeometry()
     }
     if ( wellPathGeometries().empty() ) return;
 
-    auto commonGeometry = RigWellPath::commonGeometry( wellPathGeometries() );
+    auto   commonGeometry  = RigWellPath::commonGeometry( wellPathGeometries() );
+    size_t childStartIndex = 0u;
+    size_t commonSize      = commonGeometry->wellPathPoints().size();
+    if ( commonSize > 0u ) childStartIndex = commonSize - 1u;
+
     for ( auto wellPath : m_childWellPaths )
     {
-        size_t startIndex = 0u;
-        size_t commonSize = commonGeometry->wellPathPoints().size();
-        if ( commonSize > 0u ) startIndex = commonSize - 1u;
-        wellPath->wellPathGeometry()->setUniqueStartIndex( startIndex );
+        wellPath->wellPathGeometry()->setUniqueStartAndEndIndex( childStartIndex, std::numeric_limits<size_t>::max() );
     }
     setWellPathGeometry( commonGeometry.p() );
+    wellPathGeometry()->setUniqueStartAndEndIndex( wellPathGeometry()->uniqueStartIndex(), childStartIndex );
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -287,9 +289,9 @@ void RimWellPathGroup::makeMoreLevelsIfNecessary()
     }
     if ( anyNonTrivialBranches )
     {
-        size_t startIndex = 0u;
-        size_t commonSize = wellPathGeometry()->wellPathPoints().size();
-        if ( commonSize > 0u ) startIndex = commonSize - 1u;
+        size_t childStartIndex = 0u;
+        size_t commonSize      = wellPathGeometry()->wellPathPoints().size();
+        if ( commonSize > 0u ) childStartIndex = commonSize - 1u;
 
         for ( const auto& firstDeviationAndWellPaths : branches )
         {
@@ -301,7 +303,8 @@ void RimWellPathGroup::makeMoreLevelsIfNecessary()
                 {
                     m_childWellPaths().removeChildObject( wellPath );
                     newGroup->addChildWellPath( wellPath );
-                    newGroup->wellPathGeometry()->setUniqueStartIndex( startIndex );
+                    newGroup->wellPathGeometry()->setUniqueStartAndEndIndex( childStartIndex,
+                                                                             std::numeric_limits<size_t>::max() );
                 }
                 m_childWellPaths().push_back( newGroup );
             }

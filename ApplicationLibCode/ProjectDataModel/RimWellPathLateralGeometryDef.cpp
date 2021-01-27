@@ -187,7 +187,7 @@ cvf::ref<RigWellPath> RimWellPathLateralGeometryDef::createWellPathGeometry()
     }
     wellPathLateralGeometry->setWellPathPoints( allWellPathPoints );
     wellPathLateralGeometry->setMeasuredDepths( allMeasuredDepths );
-    wellPathLateralGeometry->setUniqueStartIndex( originalSize );
+    wellPathLateralGeometry->setUniqueStartAndEndIndex( originalSize, std::numeric_limits<size_t>::max() );
 
     return wellPathLateralGeometry;
 }
