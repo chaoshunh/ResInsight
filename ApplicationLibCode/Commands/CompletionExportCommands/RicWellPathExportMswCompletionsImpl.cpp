@@ -103,7 +103,10 @@ void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForAllCompletions(
                 fractureExportFile =
                     RicWellPathExportCompletionsFileTools::openFileForExport( exportSettings.folder, fileName );
             }
-            exportWellSegmentsForFractures( exportSettings.caseToApply, fractureExportFile, wellPath );
+            exportWellSegmentsForFractures( exportSettings.caseToApply,
+                                            fractureExportFile,
+                                            wellPath,
+                                            exportSettings.exportDataSourceAsComment() );
         }
 
         if ( exportPerforations )
@@ -123,7 +126,8 @@ void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForAllCompletions(
             exportWellSegmentsForPerforations( exportSettings.caseToApply,
                                                perforationsExportFile,
                                                wellPath,
-                                               exportSettings.timeStep );
+                                               exportSettings.timeStep,
+                                               exportSettings.exportDataSourceAsComment() );
         }
 
         if ( exportFishbones )
@@ -140,7 +144,10 @@ void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForAllCompletions(
                 fishbonesExportFile =
                     RicWellPathExportCompletionsFileTools::openFileForExport( exportSettings.folder, fileName );
             }
-            exportWellSegmentsForFishbones( exportSettings.caseToApply, fishbonesExportFile, wellPath );
+            exportWellSegmentsForFishbones( exportSettings.caseToApply,
+                                            fishbonesExportFile,
+                                            wellPath,
+                                            exportSettings.exportDataSourceAsComment() );
         }
     }
 }
@@ -150,7 +157,8 @@ void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForAllCompletions(
 //--------------------------------------------------------------------------------------------------
 void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForFractures( RimEclipseCase*        eclipseCase,
                                                                           std::shared_ptr<QFile> exportFile,
-                                                                          const RimWellPath*     wellPath )
+                                                                          const RimWellPath*     wellPath,
+                                                                          bool exportDataSourceAsComment )
 {
     auto fractures = wellPath->fractureCollection()->activeFractures();
 
@@ -165,6 +173,7 @@ void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForFractures( RimEcl
 
     QTextStream               stream( exportFile.get() );
     RifTextDataTableFormatter formatter( stream );
+    formatter.setOptionalComment( exportDataSourceAsComment );
 
     double maxSegmentLength = wellPath->fractureCollection()->mswParameters()->maxSegmentLength();
 
@@ -177,7 +186,8 @@ void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForFractures( RimEcl
 //--------------------------------------------------------------------------------------------------
 void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForFishbones( RimEclipseCase*        eclipseCase,
                                                                           std::shared_ptr<QFile> exportFile,
-                                                                          const RimWellPath*     wellPath )
+                                                                          const RimWellPath*     wellPath,
+                                                                          bool exportDataSourceAsComment )
 {
     auto fishbonesSubs = wellPath->fishbonesCollection()->activeFishbonesSubs();
 
@@ -191,6 +201,7 @@ void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForFishbones( RimEcl
 
     QTextStream               stream( exportFile.get() );
     RifTextDataTableFormatter formatter( stream );
+    formatter.setOptionalComment( exportDataSourceAsComment );
 
     double maxSegmentLength = wellPath->fishbonesCollection()->mswParameters()->maxSegmentLength();
 
@@ -205,7 +216,8 @@ void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForFishbones( RimEcl
 void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForPerforations( RimEclipseCase*        eclipseCase,
                                                                              std::shared_ptr<QFile> exportFile,
                                                                              const RimWellPath*     wellPath,
-                                                                             int                    timeStep )
+                                                                             int                    timeStep,
+                                                                             bool exportDataSourceAsComment )
 {
     auto perforationIntervals = wellPath->perforationIntervalCollection()->activePerforations();
 
@@ -250,6 +262,7 @@ void RicWellPathExportMswCompletionsImpl::exportWellSegmentsForPerforations( Rim
 
     QTextStream               stream( exportFile.get() );
     RifTextDataTableFormatter formatter( stream );
+    formatter.setOptionalComment( exportDataSourceAsComment );
 
     double maxSegmentLength = wellPath->perforationIntervalCollection()->mswParameters()->maxSegmentLength();
 
@@ -307,7 +320,7 @@ void RicWellPathExportMswCompletionsImpl::generateWelsegsTable( RifTextDataTable
 
     int segmentNumber = 2; // There's an implicit segment number 1.
     {
-        formatter.comment( "Main Stem Segments" );
+        formatter.addOptionalComment( "Main Stem Segments" );
         std::shared_ptr<RicMswSegment> previousSegment;
         for ( std::shared_ptr<RicMswSegment> segment : exportInfo.segments() )
         {
@@ -316,7 +329,7 @@ void RicWellPathExportMswCompletionsImpl::generateWelsegsTable( RifTextDataTable
             if ( segment->subIndex() != cvf::UNDEFINED_SIZE_T )
             {
                 QString comment = segment->label() + QString( ", sub %1" ).arg( segment->subIndex() );
-                formatter.comment( comment );
+                formatter.addOptionalComment( comment );
             }
 
             writeMainBoreWelsegsSegment( segment, previousSegment, formatter, exportInfo, maxSegmentLength, &segmentNumber );
@@ -394,25 +407,25 @@ void RicWellPathExportMswCompletionsImpl::generateWelsegsCompletionCommentHeader
 {
     if ( completionType == RigCompletionData::CT_UNDEFINED )
     {
-        formatter.comment( "Main stem" );
+        formatter.addOptionalComment( "Main stem" );
     }
     else if ( completionType == RigCompletionData::FISHBONES_ICD )
     {
-        formatter.comment( "Fishbone Laterals" );
-        formatter.comment( "Diam: MSW - Tubing Radius" );
-        formatter.comment( "Rough: MSW - Open Hole Roughness Factor" );
+        formatter.addOptionalComment( "Fishbone Laterals" );
+        formatter.addOptionalComment( "Diam: MSW - Tubing Radius" );
+        formatter.addOptionalComment( "Rough: MSW - Open Hole Roughness Factor" );
     }
     else if ( RigCompletionData::isPerforationValve( completionType ) )
     {
-        formatter.comment( "Perforation Valve Segments" );
-        formatter.comment( "Diam: MSW - Tubing Radius" );
-        formatter.comment( "Rough: MSW - Open Hole Roughness Factor" );
+        formatter.addOptionalComment( "Perforation Valve Segments" );
+        formatter.addOptionalComment( "Diam: MSW - Tubing Radius" );
+        formatter.addOptionalComment( "Rough: MSW - Open Hole Roughness Factor" );
     }
     else if ( completionType == RigCompletionData::FRACTURE )
     {
-        formatter.comment( "Fracture Segments" );
-        formatter.comment( "Diam: MSW - Default Dummy" );
-        formatter.comment( "Rough: MSW - Default Dummy" );
+        formatter.addOptionalComment( "Fracture Segments" );
+        formatter.addOptionalComment( "Diam: MSW - Default Dummy" );
+        formatter.addOptionalComment( "Rough: MSW - Default Dummy" );
     }
 }
 
@@ -627,7 +640,7 @@ void RicWellPathExportMswCompletionsImpl::generateWsegvalvTable( RifTextDataTabl
                         if ( icd->completionType() == RigCompletionData::PERFORATION_ICD ||
                              icd->completionType() == RigCompletionData::PERFORATION_ICV )
                         {
-                            formatter.comment( icd->label() );
+                            formatter.addOptionalComment( icd->label() );
                         }
                         formatter.add( exportInfo.wellPath()->completions()->wellNameForExport() );
                         formatter.add( firstSubSegment->segmentNumber() );
@@ -1737,7 +1750,7 @@ void RicWellPathExportMswCompletionsImpl::writeValveWelsegsSegment( std::shared_
     CVF_ASSERT( valve );
     if ( !valve->isValid() ) return;
 
-    formatter.comment( valve->label() );
+    formatter.addOptionalComment( valve->label() );
 
     auto subSegment = valve->subSegments().front();
     subSegment->setSegmentNumber( *segmentNumber );
@@ -1805,12 +1818,12 @@ void RicWellPathExportMswCompletionsImpl::writeCompletionWelsegsSegment( std::sh
 {
     if ( completion->completionType() == RigCompletionData::FISHBONES )
     {
-        formatter.comment(
+        formatter.addOptionalComment(
             QString( "%1 : Sub index %2 - %3" ).arg( segment->label() ).arg( segment->subIndex() ).arg( completion->label() ) );
     }
     else if ( completion->completionType() == RigCompletionData::FRACTURE )
     {
-        formatter.comment( QString( "%1 connected to %2" ).arg( completion->label() ).arg( segment->label() ) );
+        formatter.addOptionalComment( QString( "%1 connected to %2" ).arg( completion->label() ).arg( segment->label() ) );
     }
 
     CVF_ASSERT( exportInfo.wellPath() );

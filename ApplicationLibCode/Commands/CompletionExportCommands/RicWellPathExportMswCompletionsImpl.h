@@ -46,16 +46,19 @@ public:
 
     static void exportWellSegmentsForFractures( RimEclipseCase*        eclipseCase,
                                                 std::shared_ptr<QFile> exportFile,
-                                                const RimWellPath*     wellPath );
+                                                const RimWellPath*     wellPath,
+                                                bool                   exportDataSourceAsComment );
 
     static void exportWellSegmentsForFishbones( RimEclipseCase*        eclipseCase,
                                                 std::shared_ptr<QFile> exportFile,
-                                                const RimWellPath*     wellPath );
+                                                const RimWellPath*     wellPath,
+                                                bool                   exportDataSourceAsComment );
 
     static void exportWellSegmentsForPerforations( RimEclipseCase*        eclipseCase,
                                                    std::shared_ptr<QFile> exportFile,
                                                    const RimWellPath*     wellPath,
-                                                   int                    timeStep );
+                                                   int                    timeStep,
+                                                   bool                   exportDataSourceAsComment );
 
     static RicMswExportInfo generateFishbonesMswExportInfo( const RimEclipseCase* caseToApply,
                                                             const RimWellPath*    wellPath,
@@ -196,7 +199,7 @@ private:
                                                 bool*                                 foundSubGridIntersections );
 
     static void
-        assignBranchNumbers( const RimEclipseCase* caseToApply, std::shared_ptr<RicMswSegment> segment, int* branchNum );
+                assignBranchNumbers( const RimEclipseCase* caseToApply, std::shared_ptr<RicMswSegment> segment, int* branchNum );
     static void assignBranchNumbers( const RimEclipseCase* caseToApply, RicMswExportInfo* exportInfo );
 
     static double tvdFromMeasuredDepth( gsl::not_null<const RimWellPath*> wellPath, double measuredDepth );
