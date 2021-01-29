@@ -40,7 +40,6 @@
 #include "RimEclipseView.h"
 #include "RimFileWellPath.h"
 #include "RimModeledWellPath.h"
-#include "RimModeledWellPathLateral.h"
 #include "RimOilField.h"
 #include "RimPerforationCollection.h"
 #include "RimProject.h"
@@ -49,6 +48,7 @@
 #include "RimWellLogFile.h"
 #include "RimWellMeasurementCollection.h"
 #include "RimWellPath.h"
+#include "RimWellPathCompletionSettings.h"
 #include "RimWellPathGroup.h"
 
 #include "Riu3DMainWindowTools.h"
@@ -266,7 +266,9 @@ void RimWellPathCollection::loadDataAndUpdate()
     for ( auto group : topLevelGroups() )
     {
         group->createWellPathGeometry();
+        group->completionSettings()->setWellNameForExport( group->createGroupName() );
     }
+
     this->sortWellsByName();
 }
 

@@ -22,13 +22,14 @@
 #include "RigWellPath.h"
 #include "RimFishbones.h"
 #include "RimFishbonesCollection.h"
-#include "RimModeledWellPathLateral.h"
+#include "RimModeledWellPath.h"
 #include "RimOilField.h"
 #include "RimProject.h"
 #include "RimWellPath.h"
 #include "RimWellPathCollection.h"
+#include "RimWellPathGeometryDef.h"
 #include "RimWellPathGroup.h"
-#include "RimWellPathLateralGeometryDef.h"
+#include "RimWellPathTarget.h"
 
 #include "Riu3DMainWindowTools.h"
 #include "Riu3dSelectionManager.h"
@@ -74,18 +75,27 @@ void RicNewWellPathLateralAtDepthFeature::onActionTriggered( bool isChecked )
 
         if ( wellPathCollection )
         {
-            auto newModeledWellPath = new RimModeledWellPathLateral();
+            auto newModeledWellPath = new RimModeledWellPath();
 
             auto [pointVector, measuredDepths] =
                 wellPath->wellPathGeometry()->clippedPointSubset( wellPath->wellPathGeometry()->measuredDepths().front(),
                                                                   wellPathSelItem->m_measuredDepth );
             if ( pointVector.size() < 2u ) return;
+            newModeledWellPath->geometryDefinition()->setMdAtFirstTarget( measuredDepths.front() );
+            auto newTargets = newModeledWellPath->geometryDefinition()->createTargets( pointVector, 1u, 1.0e-3 );
+            for ( auto target : newTargets )
+            {
+                target->setLocked( true );
+            }
 
-            newModeledWellPath->geometryDefinition()->setParentGeometry( wellPath->wellPathGeometry() );
-            newModeledWellPath->geometryDefinition()->setMdAtConnection( wellPathSelItem->m_measuredDepth );
-            newModeledWellPath->geometryDefinition()->createTargetAtConnectionPoint(
-                pointVector[pointVector.size() - 1u] - pointVector[pointVector.size() - 2u] );
+            cvf::Vec3d connectionTargetPos =
+                wellPath->wellPathGeometry()->interpolatedPointAlongWellPath( wellPathSelItem->m_measuredDepth );
+            cvf::Vec3d connectionTangent =
+                wellPath->wellPathGeometry()->tangentAlongWellPath( wellPathSelItem->m_measuredDepth );
+            auto connectionTarget = newModeledWellPath->geometryDefinition()->appendTarget();
+            connectionTarget->setAsPointXYZAndTangentTarget( connectionTargetPos, connectionTangent );
 
+            newModeledWellPath->setName( wellPath->name() + QString( " md=%1" ).arg( wellPathSelItem->m_measuredDepth ) );
             newModeledWellPath->geometryDefinition()->enableTargetPointPicking( true );
             newModeledWellPath->createWellPathGeometry();
             if ( wellPathGroup )

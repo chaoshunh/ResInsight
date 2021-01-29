@@ -57,6 +57,8 @@ public:
     double mdAtFirstTarget() const;
     void   setMdAtFirstTarget( double mdrkb );
 
+    std::vector<RimWellPathTarget*> createTargets( const std::vector<cvf::Vec3d>& points, size_t interval );
+
     std::pair<RimWellPathTarget*, RimWellPathTarget*>
         findActiveTargetsAroundInsertionPoint( const RimWellPathTarget* targetToInsertBefore );
 

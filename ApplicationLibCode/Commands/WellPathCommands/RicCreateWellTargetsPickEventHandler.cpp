@@ -34,7 +34,6 @@
 #include "RimModeledWellPath.h"
 #include "RimWellPath.h"
 #include "RimWellPathGeometryDef.h"
-#include "RimWellPathLateralGeometryDef.h"
 #include "RimWellPathTarget.h"
 
 #include "RiuViewerCommands.h"
@@ -134,17 +133,6 @@ bool RicCreateWellTargetsPickEventHandler::handle3dPickEvent( const Ric3dPickEve
                                            targetPointInDomain,
                                            azimuth,
                                            inclination );
-        }
-        else if ( auto wellPathLateralGeometryDef =
-                      dynamic_cast<RimWellPathLateralGeometryDef*>( m_geometryToAddTargetsTo.p() );
-                  wellPathLateralGeometryDef )
-        {
-            addNewTargetToModeledWellPathLateral( firstPickItem,
-                                                  wellPathLateralGeometryDef,
-                                                  intersectionPointInDomain,
-                                                  targetPointInDomain,
-                                                  azimuth,
-                                                  inclination );
         }
 
         return true; // Todo: See if we really should eat the event instead
@@ -298,51 +286,6 @@ void RicCreateWellTargetsPickEventHandler::addNewTargetToModeledWellPath( const 
     if ( doSetAzimuthAndInclination )
     {
         newTarget->setAsPointXYZAndTangentTarget( relativeTargetPoint, azimuth, inclination );
-    }
-    else
-    {
-        newTarget->setAsPointTargetXYD(
-            cvf::Vec3d( relativeTargetPoint.x(), relativeTargetPoint.y(), -relativeTargetPoint.z() ) );
-    }
-
-    m_geometryToAddTargetsTo->insertTarget( nullptr, newTarget );
-    m_geometryToAddTargetsTo->updateConnectedEditors();
-    m_geometryToAddTargetsTo->updateWellPathVisualization( false );
-}
-
-//--------------------------------------------------------------------------------------------------
-///
-//--------------------------------------------------------------------------------------------------
-void RicCreateWellTargetsPickEventHandler::addNewTargetToModeledWellPathLateral(
-    const RiuPickItemInfo&                        pickItem,
-    gsl::not_null<RimWellPathLateralGeometryDef*> wellPathLateralGeometryDef,
-    const cvf::Vec3d&                             intersectionPointInDomain,
-    const cvf::Vec3d&                             targetPointInDomain,
-    double                                        azimuth,
-    double                                        inclination )
-{
-    auto wellPathSourceInfo = dynamic_cast<const RivWellPathSourceInfo*>( pickItem.sourceInfo() );
-    if ( wellPathSourceInfo )
-    {
-        double mdAtConnection = wellPathSourceInfo->measuredDepth( pickItem.faceIdx(), intersectionPointInDomain );
-
-        wellPathLateralGeometryDef->setParentGeometry( wellPathSourceInfo->wellPath()->wellPathGeometry() );
-        wellPathLateralGeometryDef->setMdAtConnection( mdAtConnection );
-    }
-    cvf::Vec3d referencePoint      = wellPathLateralGeometryDef->anchorPointXyz();
-    cvf::Vec3d relativeTargetPoint = targetPointInDomain - referencePoint;
-
-    RimWellPathTarget* newTarget = new RimWellPathTarget;
-
-    bool doSetAzimuthAndInclination = azimuth != std::numeric_limits<double>::infinity() &&
-                                      inclination != std::numeric_limits<double>::infinity();
-    if ( doSetAzimuthAndInclination )
-    {
-        newTarget->setAsPointXYZAndTangentTarget( cvf::Vec3d( relativeTargetPoint.x(),
-                                                              relativeTargetPoint.y(),
-                                                              relativeTargetPoint.z() ),
-                                                  azimuth,
-                                                  inclination );
     }
     else
     {

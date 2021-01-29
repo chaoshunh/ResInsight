@@ -22,7 +22,6 @@
 #include "RicWellTarget3dEditor.h"
 
 #include "RimWellPathGeometryDef.h"
-#include "RimWellPathLateralGeometryDef.h"
 #include "RimWellPathTarget.h"
 
 #include "cafPickEventHandler.h"

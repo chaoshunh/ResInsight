@@ -24,7 +24,6 @@
 #include "RimCase.h"
 #include "RimModeledWellPath.h"
 #include "RimWellPathGeometryDef.h"
-#include "RimWellPathLateralGeometryDef.h"
 #include "RimWellPathTarget.h"
 
 #include "RiuViewer.h"
@@ -79,7 +78,7 @@ void RicWellTarget3dEditor::configureAndUpdateUi( const QString& uiConfigName )
     RiuViewer*         ownerRiuViewer = dynamic_cast<RiuViewer*>( ownerViewer() );
     Rim3dView*         view           = mainOrComparisonView();
 
-    if ( !target || !target->isEnabled() || !view )
+    if ( !target || !target->isEnabled() || target->isLocked() || !view )
     {
         if ( m_cvfModel.notNull() ) m_cvfModel->removeAllParts();
 

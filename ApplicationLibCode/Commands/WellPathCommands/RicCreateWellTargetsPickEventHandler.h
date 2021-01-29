@@ -69,13 +69,6 @@ private:
                                         double                                 azimuth,
                                         double                                 inclination );
 
-    void addNewTargetToModeledWellPathLateral( const RiuPickItemInfo&                        pickItem,
-                                               gsl::not_null<RimWellPathLateralGeometryDef*> wellPathLateralGeometryDef,
-                                               const cvf::Vec3d&                             intersectionPointInDomain,
-                                               const cvf::Vec3d&                             targetPointInDomain,
-                                               double                                        azimuth,
-                                               double                                        inclination );
-
     static bool       isGridSourceObject( const cvf::Object* object );
     static bool       isValidWellPathSourceObject( const RivWellPathSourceInfo* sourceInfo );
     static cvf::Vec3d findHexElementIntersection( gsl::not_null<const Rim3dView*> view,
