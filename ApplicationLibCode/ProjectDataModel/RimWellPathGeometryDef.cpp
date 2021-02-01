@@ -159,28 +159,16 @@ void RimWellPathGeometryDef::setMdAtFirstTarget( double md )
 //--------------------------------------------------------------------------------------------------
 ///
 //--------------------------------------------------------------------------------------------------
-std::vector<RimWellPathTarget*> RimWellPathGeometryDef::createTargets( const std::vector<cvf::Vec3d>& points,
-                                                                       size_t                         skipInterval )
+std::vector<RimWellPathTarget*> RimWellPathGeometryDef::createTargets( const std::vector<cvf::Vec3d>& points)
 {
     CAF_ASSERT( points.size() >= 2u );
 
     std::vector<RimWellPathTarget*> appendedTargets;
 
-    for ( size_t i = 0; i < points.size(); i += skipInterval )
+    for ( size_t i = 0; i < points.size(); ++i )
     {
-        cvf::Vec3d tangent;
-        if ( i < points.size() - 1u )
-        {
-            tangent = points[i + 1] - points[i];
-        }
-        else if ( i > 0u )
-        {
-            tangent = points[i] - points[i - 1];
-        }
-        tangent.normalize();
-
         auto target = appendTarget();
-        target->setAsPointXYZAndTangentTarget( points[i], tangent );
+        target->setAsPointTargetXYZ( points[i]);
         appendedTargets.push_back( target );
     }
     return appendedTargets;

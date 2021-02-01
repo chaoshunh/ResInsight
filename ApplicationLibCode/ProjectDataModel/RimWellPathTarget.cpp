@@ -126,6 +126,17 @@ void RimWellPathTarget::setAsPointTargetXYD( const cvf::Vec3d& point )
 //--------------------------------------------------------------------------------------------------
 ///
 //--------------------------------------------------------------------------------------------------
+void RimWellPathTarget::setAsPointTargetXYZ( const cvf::Vec3d& point )
+{
+    m_targetType  = POINT;
+    m_targetPoint = cvf::Vec3d( point.x(), point.y(), -point.z() );
+    m_azimuth     = 0.0;
+    m_inclination = 0.0;
+}
+
+//--------------------------------------------------------------------------------------------------
+///
+//--------------------------------------------------------------------------------------------------
 void RimWellPathTarget::setAsPointXYZAndTangentTarget( const cvf::Vec3d& point, const cvf::Vec3d& tangent )
 {
     RiaOffshoreSphericalCoords sphericalCoords( tangent );

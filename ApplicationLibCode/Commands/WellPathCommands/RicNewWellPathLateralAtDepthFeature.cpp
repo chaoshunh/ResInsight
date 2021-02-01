@@ -82,18 +82,11 @@ void RicNewWellPathLateralAtDepthFeature::onActionTriggered( bool isChecked )
                                                                   wellPathSelItem->m_measuredDepth );
             if ( pointVector.size() < 2u ) return;
             newModeledWellPath->geometryDefinition()->setMdAtFirstTarget( measuredDepths.front() );
-            auto newTargets = newModeledWellPath->geometryDefinition()->createTargets( pointVector, 1u, 1.0e-3 );
+            auto newTargets = newModeledWellPath->geometryDefinition()->createTargets( pointVector);
             for ( auto target : newTargets )
             {
                 target->setLocked( true );
             }
-
-            cvf::Vec3d connectionTargetPos =
-                wellPath->wellPathGeometry()->interpolatedPointAlongWellPath( wellPathSelItem->m_measuredDepth );
-            cvf::Vec3d connectionTangent =
-                wellPath->wellPathGeometry()->tangentAlongWellPath( wellPathSelItem->m_measuredDepth );
-            auto connectionTarget = newModeledWellPath->geometryDefinition()->appendTarget();
-            connectionTarget->setAsPointXYZAndTangentTarget( connectionTargetPos, connectionTangent );
 
             newModeledWellPath->setName( wellPath->name() + QString( " md=%1" ).arg( wellPathSelItem->m_measuredDepth ) );
             newModeledWellPath->geometryDefinition()->enableTargetPointPicking( true );

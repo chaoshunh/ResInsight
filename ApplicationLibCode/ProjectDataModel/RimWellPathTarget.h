@@ -46,6 +46,7 @@ public:
     bool isLocked() const;
 
     void setAsPointTargetXYD( const cvf::Vec3d& point );
+    void setAsPointTargetXYZ( const cvf::Vec3d& point);
     void setAsPointXYZAndTangentTarget( const cvf::Vec3d& point, const cvf::Vec3d& tangent );
     void setAsPointXYZAndTangentTarget( const cvf::Vec3d& point, double azimuth, double inclination );
     void setDerivedTangent( double azimuth, double inclination );
