@@ -78,7 +78,7 @@ void RicWellTarget3dEditor::configureAndUpdateUi( const QString& uiConfigName )
     RiuViewer*         ownerRiuViewer = dynamic_cast<RiuViewer*>( ownerViewer() );
     Rim3dView*         view           = mainOrComparisonView();
 
-    if ( !target || !target->isEnabled() || target->isLocked() || !view )
+    if ( !target || !target->isEnabled() || !view )
     {
         if ( m_cvfModel.notNull() ) m_cvfModel->removeAllParts();
 

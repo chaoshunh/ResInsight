@@ -42,9 +42,6 @@ public:
     void setEnabled( bool enable );
     bool isEnabled() const;
 
-    void setLocked( bool locked );
-    bool isLocked() const;
-
     void setAsPointTargetXYD( const cvf::Vec3d& point );
     void setAsPointTargetXYZ( const cvf::Vec3d& point);
     void setAsPointXYZAndTangentTarget( const cvf::Vec3d& point, const cvf::Vec3d& tangent );
