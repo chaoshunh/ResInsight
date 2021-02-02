@@ -216,9 +216,9 @@ void RicFishbonesTransmissibilityCalculationFeatureImp::findFishboneLateralsWell
     {
         for ( std::shared_ptr<RicMswCompletion> completion : location->completions() )
         {
-            for ( std::shared_ptr<RicMswSubSegment> segment : completion->subSegments() )
+            for ( std::shared_ptr<RicMswSegment> segment : completion->subSegments() )
             {
-                for ( std::shared_ptr<RicMswSubSegmentCellIntersection> intersection : segment->intersections() )
+                for ( std::shared_ptr<RicMswSegmentCellIntersection> intersection : segment->intersections() )
                 {
                     double  diameter = location->holeDiameter();
                     QString completionMetaData =

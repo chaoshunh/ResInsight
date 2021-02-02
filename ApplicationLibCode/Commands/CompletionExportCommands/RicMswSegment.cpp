@@ -283,6 +283,31 @@ void RicMswSegment::removeCompletion( std::shared_ptr<RicMswCompletion> completi
 //--------------------------------------------------------------------------------------------------
 ///
 //--------------------------------------------------------------------------------------------------
+void RicMswSegment::addIntersection( std::shared_ptr<RicMswSegmentCellIntersection> intersection )
+{
+    m_intersections.push_back( intersection );
+}
+
+//--------------------------------------------------------------------------------------------------
+///
+//--------------------------------------------------------------------------------------------------
+const std::vector<std::shared_ptr<RicMswSegmentCellIntersection>>& RicMswSegment::intersections() const
+{
+    return m_intersections;
+}
+
+//--------------------------------------------------------------------------------------------------
+///
+//--------------------------------------------------------------------------------------------------
+std::vector<std::shared_ptr<RicMswSegmentCellIntersection>>& RicMswSegment::intersections()
+{
+    return m_intersections;
+}
+
+
+//--------------------------------------------------------------------------------------------------
+///
+//--------------------------------------------------------------------------------------------------
 void RicMswSegment::setSourcePdmObject( const caf::PdmObject* object )
 {
     m_sourcePdmObject = const_cast<caf::PdmObject*>( object );

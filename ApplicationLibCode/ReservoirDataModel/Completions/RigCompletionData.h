@@ -78,6 +78,7 @@ public:
         PERFORATION_ICD,
         PERFORATION_AICD,
         PERFORATION_ICV,
+        LATERAL,
         CT_UNDEFINED
     };
 

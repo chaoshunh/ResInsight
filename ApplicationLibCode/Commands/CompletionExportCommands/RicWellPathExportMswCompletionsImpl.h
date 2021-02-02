@@ -19,6 +19,8 @@
 
 #include "RicMswExportInfo.h"
 #include "RigCompletionData.h"
+#include "RicMswCompletions.h"
+#include "RicMswSegment.h"
 
 #include <gsl/gsl>
 

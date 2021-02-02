@@ -18,7 +18,7 @@
 
 #include "RicMswCompletions.h"
 
-#include "RicMswSubSegment.h"
+#include "RicMswSegmentCellIntersection.h"
 
 #include "RimWellPathValve.h"
 //--------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ void RicMswCompletion::setBranchNumber( int branchNumber )
 //--------------------------------------------------------------------------------------------------
 ///
 //--------------------------------------------------------------------------------------------------
-void RicMswCompletion::addSubSegment( std::shared_ptr<RicMswSubSegment> subSegment )
+void RicMswCompletion::addSubSegment( std::shared_ptr<RicMswSegment> subSegment )
 {
     m_subSegments.push_back( subSegment );
 }
@@ -74,7 +74,7 @@ void RicMswCompletion::addSubSegment( std::shared_ptr<RicMswSubSegment> subSegme
 //--------------------------------------------------------------------------------------------------
 ///
 //--------------------------------------------------------------------------------------------------
-std::vector<std::shared_ptr<RicMswSubSegment>>& RicMswCompletion::subSegments()
+std::vector<std::shared_ptr<RicMswSegment>>& RicMswCompletion::subSegments()
 {
     return m_subSegments;
 }
@@ -82,7 +82,7 @@ std::vector<std::shared_ptr<RicMswSubSegment>>& RicMswCompletion::subSegments()
 //--------------------------------------------------------------------------------------------------
 ///
 //--------------------------------------------------------------------------------------------------
-const std::vector<std::shared_ptr<RicMswSubSegment>>& RicMswCompletion::subSegments() const
+const std::vector<std::shared_ptr<RicMswSegment>>& RicMswCompletion::subSegments() const
 {
     return m_subSegments;
 }

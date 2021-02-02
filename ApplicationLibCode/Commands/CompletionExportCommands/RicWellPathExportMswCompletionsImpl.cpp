@@ -333,6 +333,11 @@ void RicWellPathExportMswCompletionsImpl::generateWelsegsTable( RifTextDataTable
         generateWelsegsSegments( formatter, exportInfo, { RigCompletionData::FRACTURE }, maxSegmentLength, &segmentNumber );
         generateWelsegsSegments( formatter,
                                  exportInfo,
+                                 { RigCompletionData::LATERAL },
+                                 maxSegmentLength,
+                                 &segmentNumber );
+        generateWelsegsSegments( formatter,
+                                 exportInfo,
                                  { RigCompletionData::PERFORATION_ICD,
                                    RigCompletionData::PERFORATION_ICV,
                                    RigCompletionData::PERFORATION_AICD },
@@ -414,6 +419,12 @@ void RicWellPathExportMswCompletionsImpl::generateWelsegsCompletionCommentHeader
         formatter.comment( "Diam: MSW - Default Dummy" );
         formatter.comment( "Rough: MSW - Default Dummy" );
     }
+    else if (completionType == RigCompletionData::LATERAL)
+    {
+        formatter.comment( "Well Laterals" );
+        formatter.comment( "Diam: MSW - Tubing Radius" );
+        formatter.comment( "Rough: MSW - Open Hole Roughness Factor" );    
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -485,7 +496,7 @@ void RicWellPathExportMswCompletionsImpl::generateCompsegTable(
                     generatedHeader = true;
                 }
 
-                for ( const std::shared_ptr<RicMswSubSegment>& subSegment : completion->subSegments() )
+                for ( const std::shared_ptr<RicMswSegment>& subSegment : completion->subSegments() )
                 {
                     if ( completion->completionType() == RigCompletionData::FISHBONES_ICD )
                     {
@@ -493,7 +504,7 @@ void RicWellPathExportMswCompletionsImpl::generateCompsegTable(
                         endMD   = subSegment->endMD();
                     }
 
-                    for ( const std::shared_ptr<RicMswSubSegmentCellIntersection>& intersection :
+                    for ( const std::shared_ptr<RicMswSegmentCellIntersection>& intersection :
                           subSegment->intersections() )
                     {
                         bool isSubGridIntersection = !intersection->gridName().isEmpty();
@@ -880,8 +891,8 @@ RicMswExportInfo
 
                 // Add completion for ICD
                 std::shared_ptr<RicMswFishbonesICD> icdCompletion( new RicMswFishbonesICD( QString( "ICD" ), nullptr ) );
-                std::shared_ptr<RicMswSubSegment>   icdSegment(
-                    new RicMswSubSegment( subEndMD, subEndMD + 0.1, subEndTVD, subEndTVD ) );
+                std::shared_ptr<RicMswSegment>   icdSegment(
+                    new RicMswSegment( "ICD segment", subEndMD, subEndMD + 0.1, subEndTVD, subEndTVD ) );
                 icdCompletion->setFlowCoefficient( subs->icdFlowCoefficient() );
                 double icdOrificeRadius = subs->icdOrificeDiameter( unitSystem ) / 2;
                 icdCompletion->setArea( icdOrificeRadius * icdOrificeRadius * cvf::PI_D * subs->icdCount() );
@@ -1387,7 +1398,7 @@ void RicWellPathExportMswCompletionsImpl::createValveCompletions(
                             QString valveLabel =
                                 QString( "%1 #%2" ).arg( "Combined Valve for segment" ).arg( nMainSegment + 2 );
                             auto subSegment =
-                                std::make_shared<RicMswSubSegment>( exportStartMD, exportEndMD, exportStartTVD, exportEndTVD );
+                                std::make_shared<RicMswSegment>( "Valve segment", exportStartMD, exportEndMD, exportStartTVD, exportEndTVD );
 
                             superAICD = std::make_shared<RicMswPerforationAICD>( valveLabel, valve );
                             superAICD->addSubSegment( subSegment );
@@ -1396,8 +1407,11 @@ void RicWellPathExportMswCompletionsImpl::createValveCompletions(
                         {
                             QString valveLabel =
                                 QString( "%1 #%2" ).arg( "Combined Valve for segment" ).arg( nMainSegment + 2 );
-                            auto subSegment =
-                                std::make_shared<RicMswSubSegment>( exportStartMD, exportEndMD, exportStartTVD, exportEndTVD );
+                            auto subSegment = std::make_shared<RicMswSegment>( "Valve segment",
+                                                                               exportStartMD,
+                                                                               exportEndMD,
+                                                                               exportStartTVD,
+                                                                               exportEndTVD );
 
                             superICD = std::make_shared<RicMswPerforationICD>( valveLabel, valve );
                             superICD->addSubSegment( subSegment );
@@ -1406,8 +1420,11 @@ void RicWellPathExportMswCompletionsImpl::createValveCompletions(
                         {
                             QString valveLabel =
                                 QString( "ICV %1 at segment #%2" ).arg( valve->name() ).arg( nMainSegment + 2 );
-                            auto subSegment =
-                                std::make_shared<RicMswSubSegment>( exportStartMD, exportEndMD, exportStartTVD, exportEndTVD );
+                            auto subSegment = std::make_shared<RicMswSegment>( "Valve segment",
+                                                                               exportStartMD,
+                                                                               exportEndMD,
+                                                                               exportStartTVD,
+                                                                               exportEndTVD );
 
                             ICV = std::make_shared<RicMswPerforationICV>( valveLabel, valve );
                             ICV->addSubSegment( subSegment );
@@ -1422,8 +1439,11 @@ void RicWellPathExportMswCompletionsImpl::createValveCompletions(
                         QString valveLabel =
                             QString( "%1 #%2" ).arg( "Combined Valve for segment" ).arg( nMainSegment + 2 );
 
-                        auto subSegment =
-                            std::make_shared<RicMswSubSegment>( exportStartMD, exportEndMD, exportStartTVD, exportEndTVD );
+                        auto subSegment = std::make_shared<RicMswSegment>( "Valve segment",
+                                                                           exportStartMD,
+                                                                           exportEndMD,
+                                                                           exportStartTVD,
+                                                                           exportEndTVD );
                         superICD = std::make_shared<RicMswPerforationICD>( valveLabel, valve );
                         superICD->addSubSegment( subSegment );
                     }
@@ -1433,8 +1453,11 @@ void RicWellPathExportMswCompletionsImpl::createValveCompletions(
                         QString valveLabel =
                             QString( "%1 #%2" ).arg( "Combined Valve for segment" ).arg( nMainSegment + 2 );
 
-                        auto subSegment =
-                            std::make_shared<RicMswSubSegment>( exportStartMD, exportEndMD, exportStartTVD, exportEndTVD );
+                        auto subSegment = std::make_shared<RicMswSegment>( "Valve segment",
+                                                                           exportStartMD,
+                                                                           exportEndMD,
+                                                                           exportStartTVD,
+                                                                           exportEndTVD );
                         superAICD = std::make_shared<RicMswPerforationAICD>( valveLabel, valve );
                         superAICD->addSubSegment( subSegment );
                     }
@@ -1815,12 +1838,18 @@ void RicWellPathExportMswCompletionsImpl::writeCompletionWelsegsSegment( std::sh
     {
         formatter.comment( QString( "%1 connected to %2" ).arg( completion->label() ).arg( segment->label() ) );
     }
+    else if (completion->completionType() == RigCompletionData::LATERAL)
+    {
+        formatter.comment(
+            QString( "%1 : Lateral %2 - %3" ).arg( segment->label() ).arg( segment->subIndex() ).arg( completion->label() ) );
+
+    }
 
     CVF_ASSERT( exportInfo.wellPath() );
     auto wellPathGeometry = exportInfo.wellPath()->wellPathGeometry();
     CVF_ASSERT( wellPathGeometry );
 
-    for ( std::shared_ptr<RicMswSubSegment> subSegment : completion->subSegments() )
+    for ( std::shared_ptr<RicMswSegment> subSegment : completion->subSegments() )
     {
         double startMD = subSegment->startMD();
         double endMD   = subSegment->endMD();
@@ -1970,11 +1999,11 @@ void RicWellPathExportMswCompletionsImpl::assignFishbonesLateralIntersections( c
 
             size_t i = 0u, j = 0u, k = 0u;
             localGrid->ijkFromCellIndex( localGridIdx, &i, &j, &k );
-            std::shared_ptr<RicMswSubSegment> subSegment(
-                new RicMswSubSegment( previousExitMD, cellIntInfo.endMD, previousExitTVD, cellIntInfo.endTVD() ) );
+            std::shared_ptr<RicMswSegment> subSegment(
+                new RicMswSegment("Sub segment", previousExitMD, cellIntInfo.endMD, previousExitTVD, cellIntInfo.endTVD() ) );
 
-            std::shared_ptr<RicMswSubSegmentCellIntersection> intersection(
-                new RicMswSubSegmentCellIntersection( gridName,
+            std::shared_ptr<RicMswSegmentCellIntersection> intersection(
+                new RicMswSegmentCellIntersection( gridName,
                                                       cellIntInfo.globCellIndex,
                                                       cvf::Vec3st( i, j, k ),
                                                       cellIntInfo.intersectionLengthsInCellCS ) );
@@ -2009,14 +2038,14 @@ void RicWellPathExportMswCompletionsImpl::assignFractureCompletionsToCellSegment
         width = perforationLength;
     }
 
-    std::shared_ptr<RicMswSubSegment> subSegment( new RicMswSubSegment( position, position + width, 0.0, 0.0 ) );
+    std::shared_ptr<RicMswSegment> subSegment( new RicMswSegment( "Fracture segment", position, position + width, 0.0, 0.0 ) );
     for ( const RigCompletionData& compIntersection : completionData )
     {
         const RigCompletionDataGridCell& cell = compIntersection.completionDataGridCell();
         cvf::Vec3st localIJK( cell.localCellIndexI(), cell.localCellIndexJ(), cell.localCellIndexK() );
 
-        std::shared_ptr<RicMswSubSegmentCellIntersection> intersection(
-            new RicMswSubSegmentCellIntersection( cell.lgrName(), cell.globalCellIndex(), localIJK, cvf::Vec3d::ZERO ) );
+        std::shared_ptr<RicMswSegmentCellIntersection> intersection(
+            new RicMswSegmentCellIntersection( cell.lgrName(), cell.globalCellIndex(), localIJK, cvf::Vec3d::ZERO ) );
         subSegment->addIntersection( intersection );
     }
     fractureCompletion->addSubSegment( subSegment );
@@ -2082,8 +2111,8 @@ void RicWellPathExportMswCompletionsImpl::assignPerforationIntersections(
 {
     size_t currCellId = cellIntInfo.globCellIndex;
 
-    std::shared_ptr<RicMswSubSegment> subSegment(
-        new RicMswSubSegment( overlapStart, overlapEnd, cellIntInfo.startTVD(), cellIntInfo.endTVD() ) );
+    std::shared_ptr<RicMswSegment> subSegment(
+        new RicMswSegment( "Perforation segment", overlapStart, overlapEnd, cellIntInfo.startTVD(), cellIntInfo.endTVD() ) );
     for ( const RigCompletionData& compIntersection : completionData )
     {
         const RigCompletionDataGridCell& cell = compIntersection.completionDataGridCell();
@@ -2096,8 +2125,8 @@ void RicWellPathExportMswCompletionsImpl::assignPerforationIntersections(
 
         cvf::Vec3st localIJK( cell.localCellIndexI(), cell.localCellIndexJ(), cell.localCellIndexK() );
 
-        std::shared_ptr<RicMswSubSegmentCellIntersection> intersection(
-            new RicMswSubSegmentCellIntersection( cell.lgrName(),
+        std::shared_ptr<RicMswSegmentCellIntersection> intersection(
+            new RicMswSegmentCellIntersection( cell.lgrName(),
                                                   cell.globalCellIndex(),
                                                   localIJK,
                                                   cellIntInfo.intersectionLengthsInCellCS ) );

@@ -17,11 +17,17 @@
 /////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "RicMswCompletions.h"
+#include "RicMswSegmentCellIntersection.h"
 
 #include <cafPdmPointer.h>
 
 #include <memory>
+
+namespace caf
+{
+class PdmObject;
+}
+class RicMswCompletion;
 
 //==================================================================================================
 ///
@@ -72,6 +78,12 @@ public:
     void addCompletion( std::shared_ptr<RicMswCompletion> completion );
     void removeCompletion( std::shared_ptr<RicMswCompletion> completion );
 
+    void addIntersection( std::shared_ptr<RicMswSegmentCellIntersection> intersection );
+
+    const std::vector<std::shared_ptr<RicMswSegmentCellIntersection>>& intersections() const;
+    std::vector<std::shared_ptr<RicMswSegmentCellIntersection>>&       intersections();
+
+
     void                  setSourcePdmObject( const caf::PdmObject* object );
     const caf::PdmObject* sourcePdmObject() const;
 
@@ -94,6 +106,8 @@ private:
     int    m_segmentNumber;
 
     std::vector<std::shared_ptr<RicMswCompletion>> m_completions;
+
+    std::vector<std::shared_ptr<RicMswSegmentCellIntersection>> m_intersections;
 
     caf::PdmPointer<caf::PdmObject> m_sourcePdmObject;
 };

@@ -17,7 +17,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "RicMswSubSegment.h"
+#include "RicMswSegment.h"
 
 #include "RigCompletionData.h"
 
@@ -28,6 +28,7 @@
 #include <QString>
 #include <memory>
 
+class RimMswSegment;
 class RimWellPathValve;
 
 //==================================================================================================
@@ -45,10 +46,10 @@ public:
     int            branchNumber() const;
     void           setBranchNumber( int branchNumber );
 
-    void addSubSegment( std::shared_ptr<RicMswSubSegment> subSegment );
+    void addSubSegment( std::shared_ptr<RicMswSegment> subSegment );
 
-    std::vector<std::shared_ptr<RicMswSubSegment>>&       subSegments();
-    const std::vector<std::shared_ptr<RicMswSubSegment>>& subSegments() const;
+    std::vector<std::shared_ptr<RicMswSegment>>&       subSegments();
+    const std::vector<std::shared_ptr<RicMswSegment>>& subSegments() const;
 
     void setLabel( const QString& label );
 
@@ -57,7 +58,7 @@ private:
     size_t  m_index;
     int     m_branchNumber;
 
-    std::vector<std::shared_ptr<RicMswSubSegment>> m_subSegments;
+    std::vector<std::shared_ptr<RicMswSegment>> m_subSegments;
 };
 
 class RicMswFishbones : public RicMswCompletion

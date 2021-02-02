@@ -14,7 +14,7 @@ ${CMAKE_CURRENT_LIST_DIR}/RicExportCompletionsForVisibleSimWellsFeature.h
 ${CMAKE_CURRENT_LIST_DIR}/RicMswCompletions.h
 ${CMAKE_CURRENT_LIST_DIR}/RicMswExportInfo.h
 ${CMAKE_CURRENT_LIST_DIR}/RicMswSegment.h
-${CMAKE_CURRENT_LIST_DIR}/RicMswSubSegment.h
+${CMAKE_CURRENT_LIST_DIR}/RicMswSegmentCellIntersection.h
 ${CMAKE_CURRENT_LIST_DIR}/RicMswValveAccumulators.h
 ${CMAKE_CURRENT_LIST_DIR}/RicWellPathFractureTextReportFeatureImpl.h
 ${CMAKE_CURRENT_LIST_DIR}/RicWellPathFractureReportItem.h
@@ -37,7 +37,7 @@ ${CMAKE_CURRENT_LIST_DIR}/RicExportCompletionsForVisibleSimWellsFeature.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicMswCompletions.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicMswExportInfo.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicMswSegment.cpp
-${CMAKE_CURRENT_LIST_DIR}/RicMswSubSegment.cpp
+${CMAKE_CURRENT_LIST_DIR}/RicMswSegmentCellIntersection.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicMswValveAccumulators.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicWellPathFractureTextReportFeatureImpl.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicWellPathFractureReportItem.cpp
