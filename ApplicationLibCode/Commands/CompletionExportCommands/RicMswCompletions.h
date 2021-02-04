@@ -28,7 +28,6 @@
 #include <QString>
 #include <memory>
 
-class RimMswSegment;
 class RimWellPathValve;
 
 //==================================================================================================

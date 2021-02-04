@@ -11,6 +11,7 @@ ${CMAKE_CURRENT_LIST_DIR}/RicCaseAndFileExportSettingsUi.h
 ${CMAKE_CURRENT_LIST_DIR}/RicExportFractureCompletionsImpl.h
 ${CMAKE_CURRENT_LIST_DIR}/RicExportCompletionsForVisibleWellPathsFeature.h
 ${CMAKE_CURRENT_LIST_DIR}/RicExportCompletionsForVisibleSimWellsFeature.h
+${CMAKE_CURRENT_LIST_DIR}/RicMswBranch.h
 ${CMAKE_CURRENT_LIST_DIR}/RicMswCompletions.h
 ${CMAKE_CURRENT_LIST_DIR}/RicMswExportInfo.h
 ${CMAKE_CURRENT_LIST_DIR}/RicMswSegment.h
@@ -34,6 +35,7 @@ ${CMAKE_CURRENT_LIST_DIR}/RicCaseAndFileExportSettingsUi.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicExportFractureCompletionsImpl.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicExportCompletionsForVisibleWellPathsFeature.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicExportCompletionsForVisibleSimWellsFeature.cpp
+${CMAKE_CURRENT_LIST_DIR}/RicMswBranch.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicMswCompletions.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicMswExportInfo.cpp
 ${CMAKE_CURRENT_LIST_DIR}/RicMswSegment.cpp

@@ -17,10 +17,11 @@
 /////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "RicMswExportInfo.h"
-#include "RigCompletionData.h"
+#include "RicMswBranch.h"
 #include "RicMswCompletions.h"
+#include "RicMswExportInfo.h"
 #include "RicMswSegment.h"
+#include "RigCompletionData.h"
 
 #include <gsl/gsl>
 
@@ -75,14 +76,17 @@ private:
                                                             const RimWellPath*                       wellPath,
                                                             const std::vector<RimWellPathFracture*>& fractures );
 
-    static RicMswExportInfo
-        generatePerforationsMswExportInfo( RimEclipseCase*                                   eclipseCase,
-                                           const RimWellPath*                                wellPath,
-                                           int                                               timeStep,
-                                           const std::vector<const RimPerforationInterval*>& perforationIntervals );
+    static bool generatePerforationsMswExportInfo( RimEclipseCase*                                  eclipseCase,
+                                                   const RimWellPath*                               wellPath,
+                                                   int                                              timeStep,
+                                                   double                                           initialMD,
+                                                   const std::vector<WellPathCellIntersectionInfo>& cellIntersections,
+                                                   gsl::not_null<RicMswExportInfo*>                 exportInfo,
+                                                   gsl::not_null<RicMswBranch*>                     branch );
 
-    static std::vector<WellPathCellIntersectionInfo>
-        generateCellSegments( const RimEclipseCase* eclipseCase, const RimWellPath* wellPath, double& initialMD );
+    static std::vector<WellPathCellIntersectionInfo> generateCellSegments( const RimEclipseCase*  eclipseCase,
+                                                                           const RimWellPath*     wellPath,
+                                                                           gsl::not_null<double*> initialMD );
 
     static std::vector<WellPathCellIntersectionInfo>
         filterIntersections( const std::vector<WellPathCellIntersectionInfo>& intersections,
@@ -139,19 +143,18 @@ private:
                                          const RigActiveCellInfo*                         activeCellInfo );
 
 private:
-    typedef std::vector<std::shared_ptr<RicMswSegment>>                                       MainBoreSegments;
+    typedef std::vector<std::shared_ptr<RicMswSegment>>                                       Segments;
     typedef std::map<std::shared_ptr<RicMswCompletion>, std::vector<const RimWellPathValve*>> ValveContributionMap;
 
     static std::vector<std::pair<double, double>>
         createSubSegmentMDPairs( double startMD, double endMD, double maxSegmentLength );
 
-    static MainBoreSegments
-        createMainBoreSegmentsForPerforations( const std::vector<WellPathCellIntersectionInfo>& cellSegmentIntersections,
-                                               const std::vector<const RimPerforationInterval*>& perforationIntervals,
-                                               const RimWellPath*                                wellPath,
-                                               int                                               timeStep,
-                                               RimEclipseCase*                                   eclipseCase,
-                                               bool* foundSubGridIntersections );
+    static Segments createWellPathSegments( const std::vector<WellPathCellIntersectionInfo>&  cellSegmentIntersections,
+                                            const std::vector<const RimPerforationInterval*>& perforationIntervals,
+                                            const RimWellPath*                                wellPath,
+                                            int                                               timeStep,
+                                            RimEclipseCase*                                   eclipseCase,
+                                            bool* foundSubGridIntersections );
 
     static void createValveCompletions( std::vector<std::shared_ptr<RicMswSegment>>&      mainBoreSegments,
                                         const std::vector<const RimPerforationInterval*>& perforationIntervals,
@@ -169,7 +172,7 @@ private:
                                          const std::vector<const RimPerforationInterval*>&  perforationIntervals,
                                          RiaDefines::EclipseUnitSystem                      unitSystem );
 
-    static void moveIntersectionsToSuperICDsOrAICDs( MainBoreSegments mainBoreSegments );
+    static void moveIntersectionsToSuperICDsOrAICDs( Segments mainBoreSegments );
 
     static void assignFishbonesLateralIntersections( const RimEclipseCase*          caseToApply,
                                                      const RimWellPath*             wellPath,

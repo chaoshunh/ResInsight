@@ -19,14 +19,12 @@
 
 #include "RicMswSegmentCellIntersection.h"
 
-#include <cafPdmPointer.h>
+#include "cafPdmObject.h"
+#include "cafPdmPointer.h"
+#include "cvfMath.h"
 
 #include <memory>
 
-namespace caf
-{
-class PdmObject;
-}
 class RicMswCompletion;
 
 //==================================================================================================
@@ -82,7 +80,6 @@ public:
 
     const std::vector<std::shared_ptr<RicMswSegmentCellIntersection>>& intersections() const;
     std::vector<std::shared_ptr<RicMswSegmentCellIntersection>>&       intersections();
-
 
     void                  setSourcePdmObject( const caf::PdmObject* object );
     const caf::PdmObject* sourcePdmObject() const;
